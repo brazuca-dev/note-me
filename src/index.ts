@@ -1,10 +1,10 @@
-import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { SyncRoute } from './routes/sync.js'
+import { serve } from '@hono/node-server'
+import { NoteRoute } from './routes/note.route.ts'
 
 const app = new Hono().basePath('/v1')
 
-app.route(...SyncRoute)
+app.route(...NoteRoute)
 
 app.get('/', c =>  c.text(`Welcome to Proxy Note Me!`))
 

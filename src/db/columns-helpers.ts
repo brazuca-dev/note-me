@@ -1,8 +1,8 @@
 import { int, text } from "drizzle-orm/sqlite-core"
 
 const timeColumns = {
-  createdAt: int({ mode: 'timestamp' }).notNull(),
-  updatedAt: int({ mode: 'timestamp' }).notNull()
+  createdAt: int().notNull(),
+  updatedAt: int().notNull()
 }
 
 const metaDataColumns = {

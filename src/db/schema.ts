@@ -1,5 +1,5 @@
 import { int, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core"
-import { identifierColumns, metaDataColumns, timeColumns } from "./columns.helpers.ts"
+import { identifierColumns, metaDataColumns, timeColumns } from "./columns-helpers.ts"
 
 const note = sqliteTable("note", {
   ...identifierColumns,
@@ -20,14 +20,12 @@ const tag = sqliteTable("tag", {
   ...timeColumns
 })
 
-const noteTag = sqliteTable(
-  "note_tag",
-  {
-    note: int().references(() => note.cid),
-    tag: int().references(() => tag.cid),
-    ...timeColumns
-  },
-  table => [ primaryKey({ columns: [table.note, table.tag] }) ]
-)
+const noteTag = sqliteTable("note_tag", {
+  gid: identifierColumns.gid,
+  note: int().notNull(),
+  tag: int().notNull(),
+  owner: metaDataColumns.owner,
+  ...timeColumns
+})
 
 export { note, tag, noteTag }

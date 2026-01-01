@@ -6,5 +6,7 @@ declare namespace NodeJS {
     
     TURSO_DATABASE_URL: string
     TURSO_AUTH_TOKEN: string
+    
+    FRONT_END_URL: string
   }
 }
