@@ -1,22 +1,22 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "fefb3deb-a12c-40bf-b62a-50856196ab63",
-  "prevId": "4bd939fc-6211-444e-8c81-3ec5a7736691",
+  "id": "5c8323ae-4592-44a0-8d53-2456de095f39",
+  "prevId": "bf587e7d-b3f7-4c7c-9b02-162cddc5f596",
   "tables": {
     "note": {
       "name": "note",
       "columns": {
-        "gid": {
-          "name": "gid",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
-        "cid": {
-          "name": "cid",
-          "type": "integer",
+        "owner": {
+          "name": "owner",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -43,20 +43,13 @@
           "autoincrement": false,
           "default": false
         },
-        "owner": {
-          "name": "owner",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "status": {
           "name": "status",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'default'"
+          "default": "'active'"
         },
         "createdAt": {
           "name": "createdAt",
@@ -82,30 +75,23 @@
     "note_tag": {
       "name": "note_tag",
       "columns": {
-        "gid": {
-          "name": "gid",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "note": {
-          "name": "note",
-          "type": "integer",
+        "note_id": {
+          "name": "note_id",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "tag": {
-          "name": "tag",
-          "type": "integer",
+        "tag_id": {
+          "name": "tag_id",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "owner": {
           "name": "owner",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -126,24 +112,59 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "foreignKeys": {
+        "note_tag_note_id_note_id_fk": {
+          "name": "note_tag_note_id_note_id_fk",
+          "tableFrom": "note_tag",
+          "tableTo": "note",
+          "columnsFrom": [
+            "note_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "note_tag_tag_id_tag_id_fk": {
+          "name": "note_tag_tag_id_tag_id_fk",
+          "tableFrom": "note_tag",
+          "tableTo": "tag",
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "note_tag_note_id_tag_id_pk": {
+          "columns": [
+            "note_id",
+            "tag_id"
+          ],
+          "name": "note_tag_note_id_tag_id_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
     "tag": {
       "name": "tag",
       "columns": {
-        "gid": {
-          "name": "gid",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
-        "cid": {
-          "name": "cid",
-          "type": "integer",
+        "owner": {
+          "name": "owner",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -155,20 +176,13 @@
           "notNull": true,
           "autoincrement": false
         },
-        "owner": {
-          "name": "owner",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "status": {
           "name": "status",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'default'"
+          "default": "'active'"
         },
         "createdAt": {
           "name": "createdAt",

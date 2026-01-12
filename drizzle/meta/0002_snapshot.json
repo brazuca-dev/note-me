@@ -1,15 +1,15 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "bf587e7d-b3f7-4c7c-9b02-162cddc5f596",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c8964346-1cac-43e4-afdc-752e1c168d99",
+  "prevId": "5c8323ae-4592-44a0-8d53-2456de095f39",
   "tables": {
     "note": {
       "name": "note",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text(21)",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
           "autoincrement": false
@@ -51,15 +51,15 @@
           "autoincrement": false,
           "default": "'active'"
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -77,14 +77,14 @@
       "columns": {
         "note_id": {
           "name": "note_id",
-          "type": "text(21)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tag_id": {
           "name": "tag_id",
-          "type": "text(21)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -96,15 +96,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -157,7 +157,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text(21)",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
           "autoincrement": false
@@ -184,15 +184,15 @@
           "autoincrement": false,
           "default": "'active'"
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -211,7 +211,14 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"note\".\"createdAt\"": "\"note\".\"created_at\"",
+      "\"note\".\"updatedAt\"": "\"note\".\"updated_at\"",
+      "\"note_tag\".\"createdAt\"": "\"note_tag\".\"created_at\"",
+      "\"note_tag\".\"updatedAt\"": "\"note_tag\".\"updated_at\"",
+      "\"tag\".\"createdAt\"": "\"tag\".\"created_at\"",
+      "\"tag\".\"updatedAt\"": "\"tag\".\"updated_at\""
+    }
   },
   "internal": {
     "indexes": {}

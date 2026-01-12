@@ -1,16 +1,30 @@
-import { createClerkClient, verifyToken } from '@clerk/backend'
+import { getUser, isAuth } from 'auth/clerk.ts'
+import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
+import { HttpResponse } from 'utils/http-response.ts'
 
-const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
+export type AuthMiddlewareVariables = { userId: string }
 
 export const isAuthUser = createMiddleware(async (c, next) => {
-  const token = c.req.header('Authorization')?.replace('Bearer ', '')
-  if (!token) return c.text('Unauthorized', 401)
+  if (c.req.method === 'OPTIONS') return await next()
+  
+  const sessToken = getCookie(c, '__session')
+  const bearerToken = c.req.header("Authorization")?.replace('Bearer ', '')
+  const token = sessToken || bearerToken
 
-  const { sub: userId } = await verifyToken(token, { jwtKey: process.env.CLERK_JWT_KEY })
-  
-  const user = await clerkClient.users.getUser(userId)
-  if (!user) return c.text('Unauthorized', 401)
-  
-  return await next()
+  if (!token)
+    return HttpResponse.s401(c, 'Token not found. User must sign in.')
+
+  try {
+    const userId = await isAuth(token)
+    const user = await getUser(userId)
+    
+    if (!user) return HttpResponse.s404(c, "User not found.")
+    c.set('userId', userId)
+  } catch (error) {
+    console.error(error)
+    return HttpResponse.s401(c, 'Token not verified.')
+  }
+
+  return next()
 })

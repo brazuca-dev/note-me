@@ -2,59 +2,63 @@ import "dotenv/config";
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger";
-import type { JsonResponse } from "interfaces/json-response.interface.ts"
-import { isAuthUser } from "middleware/auth.middleware.ts"
+import { isAuthUser, type AuthMiddlewareVariables } from "middleware/auth.middleware.ts"
 import { getNote, patchNote, postNote, type PatchNote, type PostNote } from "services/note.service.ts"
+import { HttpResponse } from "utils/http-response.ts";
 
-const note = new Hono()
+interface Variables extends AuthMiddlewareVariables {}
 
-note.use('/*', logger())
-
-// Auth middleware for all note routes
-// note.use('/*', isAuthUser)
+const note = new Hono<{ Variables: Variables }>()
 
 note.use('/*', cors({
   origin: process.env.FRONT_END_URL,
-  allowMethods: ['GET', 'POST', 'PATCH'],
-  allowHeaders: ['Content-Type', 'Authorization']
+  allowMethods: ['GET', 'POST', 'PATCH', 'PUT'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  exposeHeaders: ['Content-Length'],
+  maxAge: 600,
+  credentials: true
 }))
 
-note.post('/', async (c) => { // upload new note
+note.use('/*', logger())
+note.use('/*', isAuthUser)
+
+// >- upload new note -<
+note.post('/', async (c) => {
+  const owner = c.get('userId')
   const noteToPost = await c.req.json<PostNote>()
-  const [gid, error] = await postNote(noteToPost)
   
-  if (error) return c.json<JsonResponse>({
-    status: 500, message: error.message, data: []
-  })
+  console.log(`Uploading note for user ${owner}`)  
   
-  return c.json<JsonResponse>({
-    status: 201, message: 'success', data: { gid }
-  })
+  const [gid, error] = await postNote(owner, noteToPost)
+  if (error) return HttpResponse.s500(c, 'Note not upload.')
+  
+  return HttpResponse.s201(c, { gid })
 })
 
-note.patch('/:gid', async (c) => { // upload changes
+// >- upload changes -<
+note.patch('/:id', async (c) => {
   const noteToPatch = await c.req.json<PatchNote>()
   const [gid, error] = await patchNote(noteToPatch)
   
-  if (error) return c.json<JsonResponse>({
-    status: 500, message: error.message, data: []
-  })
-  
-  return c.json<JsonResponse>({
-    status: 201, message: 'success', data: { gid }
-  })
+  if (error) return HttpResponse.s500(c, 'Note not updated.')
+  return HttpResponse.s200(c, { gid })
 })
 
-note.get('/:gid?', async (c) => { // Download
-  const [notes, error] = await getNote()
+// >- sync notes -<
+note.put('/sync/:lastSync', async (c) => {
+  const owner = c.get('userId')
+    
+  const { lastSync } = c.req.param()
+  const { notes: notesToPush } = await c.req.json<{ notes: [] }>()
   
-  if (error) return c.json<JsonResponse>({
-    status: 500, message: error.message, data: []
-  })
-
-  return c.json<JsonResponse>({
-    status: 201, message: 'success', data: notes
-  })
+  const [_, postNoteError] = await postNote(owner, ...notesToPush)
+  console.log(`[Post note error] => ${postNoteError?.message}`)
+  if (postNoteError) return HttpResponse.s500(c, 'No notes pushed.')
+  
+  const [notesToPull, getNoteError] = await getNote(owner, Number(lastSync))
+  if (getNoteError) return HttpResponse.s500(c, 'No notes pulled.')
+  
+  return HttpResponse.s200(c, { notes: notesToPull || [] })
 })
 
-export const NoteRoute: [string, Hono] = [ '/note', note ]
+export { note as NoteRoute }

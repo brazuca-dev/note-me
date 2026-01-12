@@ -4,7 +4,7 @@ import { NoteRoute } from './routes/note.route.ts'
 
 const app = new Hono().basePath('/v1')
 
-app.route(...NoteRoute)
+app.route('/note', NoteRoute)
 
 app.get('/', c =>  c.text(`Welcome to Proxy Note Me!`))
 
