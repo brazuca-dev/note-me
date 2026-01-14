@@ -1,26 +1,36 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
-    
+    /* 1. Alvos e Módulos */
     "target": "ESNext",
-    "module": "NodeNext",
-    "strict": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler", // Essencial para Bun e Vite
+    "lib": ["ESNext", "DOM", "DOM.Iterable"], // Adicionado DOM se houver Hono JSX/React
     
+    /* 2. Suporte ao Bun e Hono */
+    "types": ["bun-types"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx", // Mantido conforme seu uso com Hono
+    
+    /* 3. Comportamento de Importação */
+    "allowImportingTsExtensions": true,
+    "noEmit": true, // O Bun não precisa que o TS gere arquivos .js, ele executa o .ts
+    "isolatedModules": true, // Recomendado para bundlers como Bun/Vite
     "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "types": ["node"],
     
-    "baseUrl": "./src",
+    /* 4. Caminhos e Organização */
+    "baseUrl": "./src", // Ajustado para que o paths abaixo funcione corretamente
     "paths": {
       "@/*": ["./src/*"],
-      "@/data": ["./src/data/*"]
+      "@/data/*": ["./src/data/*"] // Adicionado o asterisco para mapear subdiretórios
     },
     
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "outDir": "./dist"
+    /* 5. Rigor e Checagem */
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "allowJs": true
   },
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

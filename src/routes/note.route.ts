@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger";
@@ -11,7 +10,7 @@ interface Variables extends AuthMiddlewareVariables {}
 const note = new Hono<{ Variables: Variables }>()
 
 note.use('/*', cors({
-  origin: process.env.FRONT_END_URL,
+  origin: Bun.e,
   allowMethods: ['GET', 'POST', 'PATCH', 'PUT'],
   allowHeaders: ['Content-Type', 'Authorization'],
   exposeHeaders: ['Content-Length'],

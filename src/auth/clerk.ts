@@ -1,4 +1,3 @@
-import "dotenv/config"
 import { verifyToken, createClerkClient } from "@clerk/backend"
 
 const clerkClient = createClerkClient({
