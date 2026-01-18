@@ -1,8 +1,9 @@
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from 'drizzle-orm/libsql'
+import { env } from 'validation/env.validation'
 
 export const db = drizzle({
-  connection: {
-    url: process.env.TURSO_DATABASE_URL,
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  },
-});
+	connection: {
+		url: env.TURSO_DATABASE_URL,
+		authToken: env.TURSO_AUTH_TOKEN,
+	},
+})

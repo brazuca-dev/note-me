@@ -1,61 +1,92 @@
-import { db } from "db/client.ts"
-import { note } from "db/schema.ts"
-import { and, eq, getTableColumns, gte, sql } from "drizzle-orm"
-import { tryCatchWrapper } from "utils/try-catch-wrapper.util.ts"
+import { db } from 'db/client'
+import { note } from 'db/tables'
+import { and, eq, getTableColumns, gte, sql } from 'drizzle-orm'
+import { ApiError } from 'utils/api-error.util'
+import { HttpStatus } from 'utils/http-response.util'
+import type {
+	CreateNote,
+	SyncNotes,
+	UpdateNote,
+} from 'validation/note.validation'
 
-const getNote = tryCatchWrapper(async (owner: string, timestamp?: number) => {
-  if (timestamp) return await db
-    .select()
-    .from(note)
-    .where(and(
-        gte(note.updatedAt, timestamp), eq(note.owner, owner)
-      ))
+const create = async (noteToCreate: CreateNote) => {
+	const result = await db
+		.insert(note)
+		.values(noteToCreate)
+		.returning({ id: note.id })
 
-  return await db.select().from(note).where(eq(note.owner, owner))
-})
+	if (result.length === 0)
+		throw new ApiError(
+			HttpStatus.INTERNAL_SERVER_ERROR,
+			'Failed to create note.'
+		)
+	return result[0].id
+}
 
-type PostNote = typeof note.$inferInsert
+const read = async (owner: string, timestamp?: number) => {
+	const filters = [eq(note.owner, owner)]
 
-const postNote = tryCatchWrapper(async (owner: string, ...noteToPost: PostNote[]) => {
-  if (noteToPost.length === 0) return []
-    
-  const values = noteToPost.map(n => ({
-      ...n, owner // Injetamos o dono real vindo da sessão/token
-  }))
+	if (timestamp) filters.push(gte(note.updatedAt, timestamp))
 
-  const columns = getTableColumns(note)  
-  
-  const notes = await db
-    .insert(note)
-    .values(values)
-    .returning({ id: note.id })
-    .onConflictDoUpdate({
-      target: note.id,
-      set: {
-        title: sql`excluded.title`,
-        content: sql`excluded.content`,
-        isPined: sql`excluded.is_pinned`,
-        status: sql`excluded.status`,
-        updatedAt: sql`excluded.updated_at`,
-      },
-      setWhere: sql`${note.owner} = ${owner} AND excluded.${sql.raw(columns.updatedAt.name)} >= ${note.updatedAt}`
-    })
-   
-   return notes // global id of the new notes
-})
+	const results = await db
+		.select()
+		.from(note)
+		.where(and(...filters))
 
-type PatchNote = Partial<typeof note.$inferSelect> & { id: string }
+	if (results.length === 0)
+		throw new ApiError(HttpStatus.NOT_FOUND, 'No notes found.')
 
-const patchNote = tryCatchWrapper(async (noteToPatch: PatchNote) => {
-    const [{ gid }] = await db
-    .update(note)
-    .set(noteToPatch)
-    .where(eq(note.id, noteToPatch.id))
-    .returning({ gid: note.id })
-   
-   return gid // global id of the updated note
-})
+	return results
+}
 
-export { getNote, postNote, patchNote }
+const upsert = async (owner: string, noteToUpsert: SyncNotes) => {
+	if (noteToUpsert.length === 0) return []
 
-export type { PatchNote, PostNote }
+	const columns = getTableColumns(note)
+
+	const results = await db
+		.insert(note)
+		.values(noteToUpsert)
+		.onConflictDoUpdate({
+			target: note.id,
+			set: {
+				title: sql.raw(`excluded.${columns.title.name}`),
+				content: sql.raw(`excluded.${columns.content.name}`),
+				isPined: sql.raw(`excluded.${columns.isPined.name}`),
+				status: sql.raw(`excluded.${columns.status.name}`),
+				updatedAt: sql.raw(`excluded.${columns.updatedAt.name}`),
+			},
+			setWhere: sql`${note.owner} = ${owner} AND excluded.${sql.raw(columns.updatedAt.name)} >= ${note.updatedAt}`,
+		})
+		.returning({ id: note.id })
+
+	if (results.length === 0)
+		throw new ApiError(
+			HttpStatus.INTERNAL_SERVER_ERROR,
+			'Failed to upsert notes.'
+		)
+	return results
+}
+
+const update = async (owner: string, noteToUpdate: UpdateNote) => {
+	const result = await db
+		.update(note)
+		.set(noteToUpdate)
+		.where(and(eq(note.owner, owner), eq(note.id, noteToUpdate.id)))
+		.returning({ id: note.id })
+
+	if (result.length === 0)
+		throw new ApiError(
+			HttpStatus.NOT_FOUND,
+			'Note not found or you do not have permission.'
+		)
+
+	return result[0].id
+}
+
+export const NoteService = {
+	create,
+	read,
+	upsert,
+	update,
+}
