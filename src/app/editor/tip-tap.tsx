@@ -15,20 +15,24 @@ export default function Tiptap() {
 
 	const autosave = useDebounce(
 		({ editor }: EditorEvents['update']) => {
-			if (!selectedNote) return
+			if (!selectedNote || selectedNote.content === editor.getHTML()) return
 
 			startSaving(async () => {
-				const [isRemoteSynced, isLocalSynced] = await updateNote({
-					id: selectedNote.id,
-					content: editor.getHTML(),
-				})
+				try {
+					const [isRemoteSynced, isLocalSynced] = await updateNote({
+						id: selectedNote.id,
+						content: editor.getHTML(),
+					})
 
-				if (isRemoteSynced && isLocalSynced) return handleIsSaved(true, 'both')
+					if (isRemoteSynced && isLocalSynced)
+						return handleIsSaved(true, 'both')
+					if (!isRemoteSynced && !isLocalSynced)
+						return handleIsSaved(false, 'both')
 
-				if (!isRemoteSynced && !isLocalSynced)
-					return handleIsSaved(false, 'both')
-
-				handleIsSaved(true, isRemoteSynced ? 'remote' : 'local')
+					handleIsSaved(true, isRemoteSynced ? 'remote' : 'local')
+				} catch (_) {
+					handleIsSaved(false, 'both')
+				}
 			})
 		},
 		import.meta.env.VITE_AUTOSAVE_DELAY

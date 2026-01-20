@@ -23,7 +23,7 @@ export function Tools() {
 
 	if (!selectedNote) return <></>
 
-	const { isSaved } = useSave()
+	const { isSaved, isSaving } = useSave()
 	const { isSignedIn } = useAuth()
 	const { toggleIsPinned } = useNote()
 	const { downloadNote, hasDownloaded } = useDownloadNote(selectedNote)
@@ -82,9 +82,10 @@ export function Tools() {
 					<Button
 						size='icon'
 						variant='secondary'
+						data-saving={isSaving}
 						aria-label='local save'
 						data-save={isSaved.localSaved}
-						className='data-[save=true]:bg-primary data-[save=true]:text-primary-foreground data-[save=false]:bg-destructive data-[save=false]:text-primary-foreground transition-colors duration-400 ml-4'
+						className='data-[saving=true]:animate-pulse data-[save=true]:bg-primary data-[save=true]:text-primary-foreground data-[save=false]:bg-destructive data-[save=false]:text-primary-foreground transition-colors duration-400 ml-4'
 					>
 						<Save />
 					</Button>
@@ -99,8 +100,10 @@ export function Tools() {
 					<Button
 						size='icon'
 						variant='secondary'
+						data-saving={isSaving}
 						data-issignedin={isSignedIn}
-						className='data-[issignedin=false]:opacity-65'
+						data-save={isSaved.remoteSaved}
+						className='data-[saving=true]:animate-pulse data-[save=true]:bg-primary data-[save=true]:text-primary-foreground data-[save=false]:bg-destructive data-[save=false]:text-primary-foreground transition-colors duration-400 data-[issignedin=false]:opacity-65'
 					>
 						{isSignedIn ? <Cloud /> : <CloudOff />}
 					</Button>

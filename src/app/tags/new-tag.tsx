@@ -17,7 +17,7 @@ export function NewTag() {
 			onBlur={handleOnBlur}
 			placeholder='Typing to create a new tag...'
 			onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
-			className='flex-1 bg-transparent outline-none border-b border-accent min-w-[120px] text-sm placeholder:text-xs'
+			className='flex-1 bg-transparent outline-none border-b border-accent min-w-30 text-sm placeholder:text-xs'
 		/>
 	)
 }

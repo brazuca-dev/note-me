@@ -1,30 +1,16 @@
 import { cleanObject } from '@/lib/utils'
 import { IndexDB } from '@/data/db.client'
-import type { Note, UpdateNote } from '@/data/interfaces'
-import { nanoid } from 'nanoid'
+import type {
+	IdentificatorOfRowAffected,
+	IdentificatorsOfRowAffected,
+	Note,
+	UpdateNote,
+} from '@/data/interfaces'
+import { IdentificatorService, Status, TimeService } from '@/data/helper'
 
 export function useLocalNote(owner?: string) {
-	const create = async (existingNote?: Note) => {
-		const newNote: Note = {
-			id: nanoid(),
-			title: 'Give a title to your new note :)',
-			content: '🌱 Sprout your ideias here!',
-			isPinned: false,
-			status: 'active',
-			owner,
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-		}
-		return await IndexDB.note.add(existingNote || newNote)
-	}
-
-	const update = async (note: UpdateNote) => {
-		const noteCleaned = cleanObject(note)
-		const rowsAffected = await IndexDB.note.update(note.id, noteCleaned)
-		return rowsAffected > 0
-	}
-
-	const pull = async (notesToPull: Note[]) => {
+	// >- Pull notes from remote storage
+	const pull = async (notesToPull: Note[]): IdentificatorsOfRowAffected => {
 		const rowsAffected = await IndexDB.note.bulkPut(notesToPull, {
 			allKeys: true,
 		})
@@ -35,7 +21,21 @@ export function useLocalNote(owner?: string) {
 		return rowsAffected
 	}
 
-	const read = async (id?: string, gteUpdatedAt?: number) => {
+	// -< Create a local note
+	const create = async (): IdentificatorOfRowAffected => {
+		return await IndexDB.note.add({
+			id: IdentificatorService.generateId(),
+			title: 'Give a title to your new note :)',
+			content: '🌱 Sprout your ideias here!',
+			isPinned: false,
+			status: Status.Active,
+			owner,
+			...TimeService.getTimeColumns(),
+		})
+	}
+
+	// >- Get a local note
+	const read = async (id?: string, gteUpdatedAt?: number): Promise<Note[]> => {
 		if (id) {
 			const noteById = await IndexDB.note.get(id)
 			return noteById ? [noteById] : []
@@ -48,20 +48,28 @@ export function useLocalNote(owner?: string) {
 				.and(note => note.status === 'active')
 				.toArray()
 		}
-
 		return await IndexDB.note.where('status').equals('active').toArray()
+  }
+	
+	// >- Update a local note
+	const update = async (note: UpdateNote): IdentificatorOfRowAffected => {
+		const noteCleaned = cleanObject(note)
+		const rowsAffected = await IndexDB.note.update(note.id, noteCleaned)
+		return rowsAffected > 0 ? note.id : ''
 	}
 
-	const remove = async (id: string) => {
+	// >- Delete a local note
+	const remove = async (id: string): IdentificatorOfRowAffected => {
 		await IndexDB.note.delete(id)
-		return (await IndexDB.note.where({ id }).count()) <= 0
+		const isNotFound = await IndexDB.note.where('id').equals(id).count()
+		return isNotFound <= 0 ? id : ''
 	}
 
 	return {
 		createLocalNote: create,
 		updateLocalNote: update,
 		readLocalNote: read,
-		pullNotesFromRemote: pull,
 		deleteLocalNote: remove,
+		pullNotesFromRemote: pull,
 	}
 }

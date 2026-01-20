@@ -3,10 +3,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { useLocalNote } from './use-local-note'
 import { useRemoteNote } from './use-remote-note'
 import { SyncService } from '@/data/helper'
-
-type UseNoteResponse = Promise<
-	[isRemoteSynced: boolean, isLocalSynced: boolean]
->
+import { sync, type SyncResponse } from '@/lib/utils'
 
 export function useNote() {
 	const { userId, isSignedIn } = useAuth()
@@ -19,7 +16,7 @@ export function useNote() {
 	const { createRemoteNote, updateRemoteNote, pushNotesToRemote } =
 		useRemoteNote()
 
-	const syncNotesProcedure = async (): UseNoteResponse => {
+	const syncNotesProcedure = async (): Promise<SyncResponse> => {
 		if (!isSignedIn) return [false, false]
 		const lastSync = await SyncService.getLastSync()
 
@@ -28,50 +25,72 @@ export function useNote() {
 		const notesToPull = await pushNotesToRemote(notesToPush, lastSync)
 		const notesPulled = await pullNotesFromRemote(notesToPull)
 
-		return [notesToPull.length > 0, notesPulled.length > 0]
+		return sync.both({
+			isRemoteSynced: notesToPull.length > 0,
+			isLocalSynced: notesPulled.length > 0,
+		})
 	}
 
-	const createNote = async (): UseNoteResponse => {
-		const id = await createLocalNote()
-		const [noteCreated] = await readLocalNote(id)
+	const createNote = async (): Promise<SyncResponse> => {
+		try {
+			const noteId = await createLocalNote()
+			const isLocalSynced = noteId !== null
 
-		if (!noteCreated) throw new Error('Failed to create note')
-		if (!isSignedIn) return [false, !!id]
+			if (!isSignedIn) return sync.local(isLocalSynced)
 
-		const gid = await createRemoteNote(noteCreated)
-		return [gid !== null, !!id]
-	}
+			const [noteCreated] = await readLocalNote(noteId)
+			const isRemoteSynced = !!(await createRemoteNote(noteCreated))
 
-	const updateNote = async (note: UpdateNote): UseNoteResponse => {
-		const noteToUpdate = { ...note, updatedAt: Date.now() }
-
-		const isLocalSaved = await updateLocalNote(noteToUpdate)
-		if (!isSignedIn) return [false, isLocalSaved]
-
-		const isRemoteSaved = await updateRemoteNote(noteToUpdate)
-		return [isRemoteSaved, isLocalSaved]
-	}
-
-	const toggleIsPinned = async (id: string): UseNoteResponse => {
-		const [localNote] = await readLocalNote(id)
-		if (!localNote) throw new Error('Note not found')
-
-		const noteWithPinnedToggled: UpdateNote = {
-			...localNote,
-			isPinned: !localNote.isPinned,
+			return sync.both({ isRemoteSynced, isLocalSynced })
+		} catch (_) {
+			return sync.failed()
 		}
-		return (await updateNote(noteWithPinnedToggled)) || [false, false]
 	}
 
-	const toggleIsTrashed = async (id: string): UseNoteResponse => {
-		const [localNote] = await readLocalNote(id)
-		if (!localNote) throw new Error('Note not found')
+	const updateNote = async (note: UpdateNote): Promise<SyncResponse> => {
+		try {
+			const noteToUpdate = { ...note, updatedAt: Date.now() }
 
-		const noteWithStatusToggled: UpdateNote = {
-			...localNote,
-			status: localNote.status === 'active' ? 'trashed' : 'active',
+			const isLocalSynced = !!(await updateLocalNote(noteToUpdate))
+			if (!isSignedIn) return sync.local(isLocalSynced)
+
+			const isRemoteSynced = !!(await updateRemoteNote(noteToUpdate))
+			return sync.both({ isRemoteSynced, isLocalSynced })
+		} catch (_) {
+			return sync.failed()
 		}
-		return (await updateNote(noteWithStatusToggled)) || [false, false]
+	}
+
+	const toggleIsPinned = async (id: string): Promise<SyncResponse> => {
+		try {
+			const [localNote] = await readLocalNote(id)
+			if (!localNote)
+				throw new Error(`Note ${id} not found while trying to toggle isPinned`)
+
+			const noteWithPinnedToggled: UpdateNote = {
+				...localNote,
+				isPinned: !localNote.isPinned,
+			}
+			return await updateNote(noteWithPinnedToggled)
+		} catch (_) {
+			return sync.failed()
+		}
+	}
+
+	const toggleIsTrashed = async (id: string): Promise<SyncResponse> => {
+		try {
+			const [localNote] = await readLocalNote(id)
+			if (!localNote)
+				throw new Error(`Note ${id} not found while trying to toggle isTrashed`)
+
+			const noteWithStatusToggled: UpdateNote = {
+				...localNote,
+				status: localNote.status === 'active' ? 'trashed' : 'active',
+			}
+			return (await updateNote(noteWithStatusToggled)) || [false, false]
+		} catch (_) {
+			return sync.failed()
+		}
 	}
 
 	return {
