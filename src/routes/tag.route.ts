@@ -1,14 +1,14 @@
 import { Hono } from 'hono'
-import { RouteConfigs } from 'config'
+import { RouteSettings } from './_route.config'
 import type { AuthMiddlewareVariables } from 'middleware/auth.middleware.ts'
 import { TagHandler } from 'handlers/tag.handlers'
 
-interface Variables extends AuthMiddlewareVariables {}
+const tag = new Hono<{ Variables: AuthMiddlewareVariables }>()
 
-const tag = new Hono<{ Variables: Variables }>()
-
-tag.use('/*', ...RouteConfigs)
+tag.use('/*', ...RouteSettings)
 
 tag.post('/', ...TagHandler.create)
+tag.patch('/', ...TagHandler.update)
+tag.put('/sync/:lastSync', ...TagHandler.update)
 
 export { tag as TagRoute }

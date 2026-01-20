@@ -23,4 +23,6 @@ if (!parsed.success) {
 	throw new Error('Invalid configuration.')
 }
 
-export const env = parsed.data
+export const env: Readonly<z.infer<typeof envSchema>> = Object.freeze(
+	parsed.data
+)

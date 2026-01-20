@@ -4,11 +4,12 @@ import {
 	CreateNoteSchema,
 	UpdateNoteSchema,
 	SyncNotesSchema,
+	ToggleTagSchema,
 } from 'validation/note.validation'
 import { NoteService } from 'services/note.service'
 import { HttpResponse } from 'utils/http-response.util'
 import type { AuthMiddlewareVariables } from 'middleware/auth.middleware'
-import { LastSyncSchema } from 'validation/params.validation'
+import { BooleanStateSchema, LastSyncSchema } from 'validation/params.validation'
 
 const factory = createFactory<{ Variables: AuthMiddlewareVariables }>()
 
@@ -27,9 +28,9 @@ const update = factory.createHandlers(
 	zValidator('json', UpdateNoteSchema),
 	async c => {
 		const owner = c.get('userId')
-		const data = c.req.valid('json')
+		const validateNote = c.req.valid('json')
 
-		const id = await NoteService.update(owner, data)
+		const id = await NoteService.update(owner, validateNote)
 		return HttpResponse.s200(c, { id })
 	}
 )
@@ -41,17 +42,27 @@ const sync = factory.createHandlers(
 	async c => {
 		const owner = c.get('userId')
 		const lastSync = c.req.valid('param')
-		const notesToPush = c.req.valid('json')
+		const validateNotesToSync = c.req.valid('json')
 
-		const notesPushed = await NoteService.upsert(owner, notesToPush)
-		const notesToPull = await NoteService.read(owner, lastSync)
+		const { data: notes } = await NoteService.sync(
+			owner,
+			validateNotesToSync,
+			lastSync
+		)
+		return HttpResponse.s200(c, { notes })
+	}
+)
 
-		return HttpResponse.s200(c, {
-			notes: {
-				pushed: notesPushed,
-				toPull: notesToPull,
-			},
-		})
+// -< Tag a note >-
+const toggleTag = factory.createHandlers(
+  zValidator('json', ToggleTagSchema),
+  zValidator('param', BooleanStateSchema),
+	async c => {
+		const validateToggleTag = c.req.valid('json')
+		const validateBooleanState = c.req.valid('param')
+
+		const id = await NoteService.toggleTag(validateToggleTag, validateBooleanState)
+		return HttpResponse.s200(c, { id })
 	}
 )
 
@@ -59,4 +70,5 @@ export const NoteHandler = {
 	create,
 	update,
 	sync,
+	toggleTag,
 }

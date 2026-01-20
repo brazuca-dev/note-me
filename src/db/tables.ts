@@ -44,7 +44,5 @@ export const noteTag = sqliteTable(
 		owner,
 		...timeColumns,
 	},
-	table => [
-		primaryKey({ columns: [table.noteId, table.tagId] }),
-	]
+	table => [primaryKey({ columns: [table.noteId, table.tagId] })]
 )
