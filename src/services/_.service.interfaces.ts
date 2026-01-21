@@ -7,7 +7,7 @@ type Identificators = { id: Identificator }[]
 type IdentificatorOfRowsAffected = Promise<Identificators>
 
 type CompoundIdentificatorsOfRowAffected<P extends object> = Promise<{
-  [K in keyof P]: Identificator
+	[K in keyof P]: Identificator
 }>
 
 type BaseRow<T extends Table> = InferSelectModel<T>
@@ -22,8 +22,8 @@ type DataSync<T extends Table> = Promise<{
 
 export type {
 	IdentificatorOfRowAffected,
-  IdentificatorOfRowsAffected,
-  CompoundIdentificatorsOfRowAffected,
+	IdentificatorOfRowsAffected,
+	CompoundIdentificatorsOfRowAffected,
 	RowCollection,
 	DataSync,
 }

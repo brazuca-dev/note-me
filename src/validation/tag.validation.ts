@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { tag } from 'db/tables'
+import { tag } from 'db/tables.db'
 import type { InferInsertModel } from 'drizzle-orm'
 import { createUpdateSchema } from 'drizzle-zod'
 import { createInsertSchema } from 'drizzle-zod'

@@ -1,10 +1,6 @@
-import { verifyToken, createClerkClient } from '@clerk/backend'
+import { clerkClient } from './client.auth'
+import { verifyToken } from '@clerk/backend'
 import { env } from 'validation/env.validation'
-
-const clerkClient = createClerkClient({
-	secretKey: env.CLERK_SECRET_KEY,
-	publishableKey: env.CLERK_PUBLISHABLE_KEY,
-})
 
 export const getUser = async (userId: string) => {
 	try {

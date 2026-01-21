@@ -9,7 +9,10 @@ import {
 import { NoteService } from 'services/note.service'
 import { HttpResponse } from 'utils/http-response.util'
 import type { AuthMiddlewareVariables } from 'middleware/auth.middleware'
-import { BooleanStateSchema, LastSyncSchema } from 'validation/params.validation'
+import {
+	BooleanStateSchema,
+	LastSyncSchema,
+} from 'validation/params.validation'
 
 const factory = createFactory<{ Variables: AuthMiddlewareVariables }>()
 
@@ -55,13 +58,16 @@ const sync = factory.createHandlers(
 
 // -< Tag a note >-
 const toggleTag = factory.createHandlers(
-  zValidator('json', ToggleTagSchema),
-  zValidator('param', BooleanStateSchema),
+	zValidator('json', ToggleTagSchema),
+	zValidator('param', BooleanStateSchema),
 	async c => {
 		const validateToggleTag = c.req.valid('json')
 		const validateBooleanState = c.req.valid('param')
 
-		const id = await NoteService.toggleTag(validateToggleTag, validateBooleanState)
+		const id = await NoteService.toggleTag(
+			validateToggleTag,
+			validateBooleanState
+		)
 		return HttpResponse.s200(c, { id })
 	}
 )

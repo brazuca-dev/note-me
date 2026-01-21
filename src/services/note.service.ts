@@ -1,5 +1,5 @@
-import { db } from 'db/client'
-import { note, noteTag } from 'db/tables'
+import { db } from 'db/client.db'
+import { note, noteTag } from 'db/tables.db'
 import { and, eq, getTableColumns, gte, sql } from 'drizzle-orm'
 import { ApiError } from 'utils/api-error.util'
 import { HttpStatus } from 'utils/http-response.util'
@@ -14,7 +14,7 @@ import type {
 	IdentificatorOfRowsAffected,
 	DataSync,
 	RowCollection,
-  CompoundIdentificatorsOfRowAffected,
+	CompoundIdentificatorsOfRowAffected,
 } from './_.service.interfaces'
 
 const create = async (noteToCreate: CreateNote): IdentificatorOfRowAffected => {
@@ -121,9 +121,12 @@ const sync = async (
 const toggleTag = async (
 	noteTagToToggle: ToggleTag,
 	state: boolean
-): CompoundIdentificatorsOfRowAffected<{ noteId: string, tagId: string }> => {
-  const identificatorsReturning = { noteId: noteTag.noteId, tagId: noteTag.tagId }
-    
+): CompoundIdentificatorsOfRowAffected<{ noteId: string; tagId: string }> => {
+	const identificatorsReturning = {
+		noteId: noteTag.noteId,
+		tagId: noteTag.tagId,
+	}
+
 	const [response] = state
 		? await db
 				.insert(noteTag)

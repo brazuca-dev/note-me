@@ -10,7 +10,7 @@ const envSchema = z.object({
 
 	FRONT_END_URL: z.url(),
 
-	PORT: z.coerce.number().default(3000),
+	PORT: z.coerce.number().optional().default(3000),
 })
 
 const parsed = envSchema.safeParse(Bun.env)

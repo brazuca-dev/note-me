@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { RouteSettings } from './_route.config'
 import type { AuthMiddlewareVariables } from 'middleware/auth.middleware.ts'
-import { TagHandler } from 'handlers/tag.handlers'
+import { TagHandler } from 'handlers/tag.handler'
 
 const tag = new Hono<{ Variables: AuthMiddlewareVariables }>()
 

@@ -1,5 +1,5 @@
-import { db } from 'db/client'
-import { tag } from 'db/tables'
+import { db } from 'db/client.db'
+import { tag } from 'db/tables.db'
 import { and, eq, getTableColumns, gte, sql } from 'drizzle-orm'
 import { ApiError } from 'utils/api-error.util'
 import { HttpStatus } from 'utils/http-response.util'
