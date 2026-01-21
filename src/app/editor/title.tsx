@@ -1,4 +1,4 @@
-import { useDebounce } from '@/hooks/utils/use-debounce'
+import { useDebounce } from '@/hooks/use-debounce'
 import { useNote } from '@/hooks/use-note'
 import { type ChangeEvent } from 'react'
 import { useEditor } from '@/global/context/editor-context'

@@ -49,12 +49,14 @@ export function useLocalNote(owner?: string) {
 				.toArray()
 		}
 		return await IndexDB.note.where('status').equals('active').toArray()
-  }
-	
+	}
+
 	// >- Update a local note
 	const update = async (note: UpdateNote): IdentificatorOfRowAffected => {
 		const noteCleaned = cleanObject(note)
-		const rowsAffected = await IndexDB.note.update(note.id, noteCleaned)
+		const noteToUpdate = TimeService.upLastUpdateColumn(noteCleaned)
+
+		const rowsAffected = await IndexDB.note.update(note.id, noteToUpdate)
 		return rowsAffected > 0 ? note.id : ''
 	}
 

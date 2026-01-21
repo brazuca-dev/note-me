@@ -12,9 +12,7 @@ export function UpdateTag({ tag, isEditable }: UpdateTagProps) {
 	const inputRef = useRef<ComponentRef<'input'>>(null)
 
 	useEffect(() => {
-		if (isEditable && inputRef.current) {
-			inputRef.current.focus()
-		}
+		if (isEditable && inputRef.current) inputRef.current.focus()
 	}, [isEditable])
 
 	const inputWidth = `${(tag?.title?.length ?? 4) + (tag?.title?.length ?? 4) * 8}px`

@@ -30,8 +30,18 @@ interface Settings {
 	value: string | number | boolean
 }
 
-type IdentificatorOfRowAffected = Promise<string>
-type IdentificatorsOfRowAffected = Promise<string[]>
+type Identificator = string
+type IdentificatorOfRowAffected = Promise<Identificator>
+type IdentificatorsOfRowAffected = Promise<Identificator[]>
+
+type JSONIdentificator = { id: Identificator }
+
+type JSONSyncData<T extends object, Name extends string> = {
+	[K in Name]: {
+		pushed: Identificator[]
+		toPull: T[]
+	}
+}
 
 export type {
 	Note,
@@ -42,4 +52,6 @@ export type {
 	Settings,
 	IdentificatorOfRowAffected,
 	IdentificatorsOfRowAffected,
+	JSONIdentificator,
+	JSONSyncData,
 }

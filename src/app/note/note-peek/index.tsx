@@ -28,9 +28,9 @@ export const NotePeek = ({ note }: NotePeekProps) => {
 		<ContextMenu>
 			<ContextMenuTrigger>
 				<SidebarMenuButton
-					onClick={() => handleNoteSelect(note)}
 					aria-selected={isSelected}
-					className='aria-[selected=true]:bg-card flex flex-col items-start h-fit p-4 border border-border transition-all duration-300'
+					onClick={() => handleNoteSelect(note)}
+					className='aria-selected:bg-card flex flex-col items-start h-fit p-4 border border-border transition-all duration-300'
 				>
 					<NoteHeader title={note.title} isPinned={note.isPinned} />
 					<NoteSpoiler content={note.content} />

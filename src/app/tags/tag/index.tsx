@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { UpdateTag } from './update-tag'
 import { Badge } from '@/components/ui/badge'
 import { Show } from '@/components/utils'
+import { useTag } from '@/hooks/use-tag'
 
 interface TagProps {
 	tag?: Tag
@@ -15,6 +16,7 @@ interface TagProps {
 export function Tag({ tag, selected, onChangeSelect }: TagProps) {
 	const lastClickTimestampRef = useRef<number>(0)
 	const [isEditable, setIsEditable] = useState<boolean>(false)
+	const { toTrashTag } = useTag()
 
 	const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		const isDoubleClick = e.timeStamp - lastClickTimestampRef.current < 700
@@ -43,7 +45,7 @@ export function Tag({ tag, selected, onChangeSelect }: TagProps) {
 						className='size-3 hover:text-destructive'
 						onClick={e => {
 							e.stopPropagation()
-							// toggle status to trashed
+							toTrashTag(tag!.id)
 						}}
 					/>
 				</button>

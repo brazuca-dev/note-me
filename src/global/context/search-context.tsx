@@ -6,7 +6,7 @@ import {
 	type ReactElement,
 	useMemo,
 } from 'react'
-import { useDebounce } from '@/hooks/utils/use-debounce'
+import { useDebounce } from '@/hooks/use-debounce'
 
 interface SearchContextProps {
 	query: string

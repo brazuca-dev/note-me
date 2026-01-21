@@ -2,12 +2,13 @@ import { useEditor } from '@/global/context/editor-context'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { IndexDB, type Note } from '@/data/db.client'
 import { useSearch } from '@/global/context/search-context'
+import { useCallback } from 'react'
 
 export function useLiveQueryNote() {
 	const { query } = useSearch()
 	const { selectedTags } = useEditor()
-
-	const sortDefault = (notes: Note[]) => {
+	
+	const sortDefault = useCallback((notes: Note[]) => {
 		return notes.sort((a, b) => {
 			if (a.isPinned === true && b.isPinned === true)
 				return b.createdAt - a.createdAt
@@ -17,7 +18,7 @@ export function useLiveQueryNote() {
 
 			return b.createdAt - a.createdAt
 		})
-	}
+	}, [])
 
 	return useLiveQuery(async () => {
 		if (query === '' && selectedTags.has('0'))
@@ -36,7 +37,7 @@ export function useLiveQueryNote() {
 
 		if (!selectedTags.has('0')) {
 			const noteTag = await IndexDB.noteTag
-				.filter(item => selectedTags.has(item.tag.toString()))
+				.filter(item => selectedTags.has(item.tag))
 				.toArray()
 			const notesByTag = (
 				await IndexDB.note.bulkGet(noteTag.map(item => item.note))
@@ -45,5 +46,5 @@ export function useLiveQueryNote() {
 			result = [...result, ...notesByTag]
 		}
 		return sortDefault(result)
-	}, [query, selectedTags.size])
+	}, [query, selectedTags])
 }

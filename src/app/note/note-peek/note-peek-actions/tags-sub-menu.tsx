@@ -7,17 +7,19 @@ import {
 } from '@/components/ui/context-menu'
 import { For, Show } from '@/components/utils'
 import type { Tag } from '@/data/interfaces'
+import { useTag } from '@/hooks/use-tag'
 import { isEmpty } from '@/lib/utils'
 import Tags from 'lucide-react/dist/esm/icons/tags'
 
 interface TagsSubMenuProps {
-	tags?: Tag[]
+  noteId: string
+  tags?: Tag[]
 	tagsByNote?: (Tag | undefined)[]
 }
 
-export const TagsSubMenu = ({ tags, tagsByNote }: TagsSubMenuProps) => {
-	const handleTagClick = (tagId: string) => console.log('Tag toggle:', tagId)
-
+export const TagsSubMenu = ({ noteId, tags, tagsByNote }: TagsSubMenuProps) => {
+  const { toggleTagNote } = useTag()
+    
 	return (
 		<ContextMenuItem>
 			<ContextMenuSub>
@@ -36,7 +38,7 @@ export const TagsSubMenu = ({ tags, tagsByNote }: TagsSubMenuProps) => {
 								<ContextMenuCheckboxItem
 									key={tag?.id}
 									checked={!!tagsByNote?.find(t => t?.id === tag.id)}
-									onClick={() => handleTagClick(tag.id)}
+									onClick={() => toggleTagNote(noteId, tag.id)}
 								>
 									#{tag?.title}
 								</ContextMenuCheckboxItem>

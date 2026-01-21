@@ -22,7 +22,7 @@ export const NotePeekActions = ({
 	return (
 		<ContextMenuContent>
 			<PinMenuItem isPinned={note.isPinned} onClick={onTogglePin} />
-			<TagsSubMenu tags={tags} tagsByNote={tagsByNote} />
+			<TagsSubMenu noteId={note.id} tags={tags} tagsByNote={tagsByNote} />
 			<TrashMenuItem onClick={onToggleTrash} />
 		</ContextMenuContent>
 	)

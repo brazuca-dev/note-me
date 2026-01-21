@@ -5,6 +5,7 @@ export function useDownloadNote(note: Note) {
 	const [hasDownloaded, setHasDownloaded] = useState<boolean | null>(null)
 
 	useEffect(() => {
+		// reset 'hasDownloaded' state
 		if (hasDownloaded !== null) {
 			const timer = setTimeout(
 				() => setHasDownloaded(null),
@@ -38,7 +39,6 @@ export function useDownloadNote(note: Note) {
 			a.click()
 			URL.revokeObjectURL(url)
 		} catch (error) {
-			console.error(error)
 			setHasDownloaded(false)
 		}
 		setHasDownloaded(true)

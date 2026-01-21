@@ -19,7 +19,7 @@ type UseFetchProps = RequestInit & { subUrl?: string }
  * @param baseUrl - The base URL for the API.
  * @returns A function that can be used to make HTTP requests.
  */
-export function useFetch(baseUrl: string) {
+export function useAuthFetch(baseUrl: string) {
 	const { getToken } = useAuth()
 
 	return async (options?: UseFetchProps): UseFetchResponse => {

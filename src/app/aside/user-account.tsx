@@ -5,7 +5,7 @@ import {
 	UserButton,
 } from '@clerk/clerk-react'
 import User from 'lucide-react/dist/esm/icons/user'
-import { Button } from '../../components/ui/button'
+import { Button } from '@/components/ui/button'
 
 export function UserAccount() {
 	return (

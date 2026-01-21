@@ -8,7 +8,7 @@ import TagsIcon from 'lucide-react/dist/esm/icons/tags'
 export function MyTags() {
 	const { tags } = useLiveQueryTag()
 	const { handleTagsSelected, selectedTags } = useEditor()
-
+	
 	return (
 		<>
 			<h5>

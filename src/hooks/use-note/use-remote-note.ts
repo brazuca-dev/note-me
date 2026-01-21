@@ -1,17 +1,15 @@
 import type {
 	IdentificatorOfRowAffected,
+	JSONIdentificator,
+	JSONSyncData,
 	Note,
 	UpdateNote,
 } from '@/data/interfaces'
-import { useFetch } from '../utils/use-fetch'
+import { useAuthFetch } from '../use-auth-fetch'
 import { cleanObject } from '@/lib/utils'
 
-// -< Possible json responses from remote storage
-type JsonNoteId = { id: string }
-type JsonNotesToPull = { notes: Note[] }
-
 export function useRemoteNote() {
-	const fetch = useFetch(`${import.meta.env.VITE_API_PROXY}/note`)
+	const fetch = useAuthFetch(`${import.meta.env.VITE_API_PROXY}/note`)
 
 	// >- Push local notes to remote storage
 	const push = async (
@@ -25,10 +23,11 @@ export function useRemoteNote() {
 		})
 
 		if (!response.ok) throw new Error('Failed to push notes to remote storage')
-		const { data, status, message } = await response.json<JsonNotesToPull>()
+		const { data, status, message } =
+			await response.json<JSONSyncData<Note, 'note'>>()
 
 		if (status !== 200) throw new Error(message)
-		return data.notes
+		return data.note.toPull
 	}
 
 	// -< Create a remote note
@@ -39,7 +38,7 @@ export function useRemoteNote() {
 		})
 
 		if (!response.ok) throw new Error('Failed to create remote note')
-		const { status, data, message } = await response.json<JsonNoteId>()
+		const { status, data, message } = await response.json<JSONIdentificator>()
 
 		if (status !== 201) throw new Error(message)
 		return data.id
@@ -56,7 +55,7 @@ export function useRemoteNote() {
 		})
 
 		if (!response.ok) throw new Error('Failed to update note')
-		const { status, data, message } = await response.json<JsonNoteId>()
+		const { status, data, message } = await response.json<JSONIdentificator>()
 
 		if (status !== 200) throw new Error(message)
 		return data.id
@@ -70,7 +69,7 @@ export function useRemoteNote() {
 		})
 
 		if (!response.ok) throw new Error('Failed to remove note')
-		const { status, data, message } = await response.json<JsonNoteId>()
+		const { status, data, message } = await response.json<JSONIdentificator>()
 
 		if (status !== 200) throw new Error(message)
 		return data.id

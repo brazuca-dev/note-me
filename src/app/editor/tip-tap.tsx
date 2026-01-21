@@ -6,7 +6,7 @@ import { Fragment } from 'react/jsx-runtime'
 import { useNote } from '@/hooks/use-note'
 import { useEffect } from 'react'
 import { useSave } from '@/global/context/save-context'
-import { useDebounce } from '@/hooks/utils/use-debounce'
+import { useDebounce } from '@/hooks/use-debounce'
 
 export default function Tiptap() {
 	const { updateNote } = useNote()

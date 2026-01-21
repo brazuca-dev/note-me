@@ -3,7 +3,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { useLocalNote } from './use-local-note'
 import { useRemoteNote } from './use-remote-note'
 import { SyncService } from '@/data/helper'
-import { sync, type SyncResponse } from '@/lib/utils'
+import { type SyncResponse, sync } from '@/lib/sync-response'
 
 export function useNote() {
 	const { userId, isSignedIn } = useAuth()
@@ -17,18 +17,22 @@ export function useNote() {
 		useRemoteNote()
 
 	const syncNotesProcedure = async (): Promise<SyncResponse> => {
-		if (!isSignedIn) return [false, false]
-		const lastSync = await SyncService.getLastSync()
+		try {
+			if (!isSignedIn) return sync.failed()
+			const lastSync = await SyncService.getLastSync()
 
-		const notesToPush = await readLocalNote(undefined, lastSync)
+			const notesToPush = await readLocalNote(undefined, lastSync)
 
-		const notesToPull = await pushNotesToRemote(notesToPush, lastSync)
-		const notesPulled = await pullNotesFromRemote(notesToPull)
+			const notesToPull = await pushNotesToRemote(notesToPush, lastSync)
+			const notesPulled = await pullNotesFromRemote(notesToPull)
 
-		return sync.both({
-			isRemoteSynced: notesToPull.length > 0,
-			isLocalSynced: notesPulled.length > 0,
-		})
+			return sync.both({
+				isRemoteSynced: notesToPull.length > 0,
+				isLocalSynced: notesPulled.length > 0,
+			})
+		} catch (_) {
+			return sync.failed()
+		}
 	}
 
 	const createNote = async (): Promise<SyncResponse> => {
@@ -49,12 +53,10 @@ export function useNote() {
 
 	const updateNote = async (note: UpdateNote): Promise<SyncResponse> => {
 		try {
-			const noteToUpdate = { ...note, updatedAt: Date.now() }
-
-			const isLocalSynced = !!(await updateLocalNote(noteToUpdate))
+			const isLocalSynced = !!(await updateLocalNote(note))
 			if (!isSignedIn) return sync.local(isLocalSynced)
 
-			const isRemoteSynced = !!(await updateRemoteNote(noteToUpdate))
+			const isRemoteSynced = !!(await updateRemoteNote(note))
 			return sync.both({ isRemoteSynced, isLocalSynced })
 		} catch (_) {
 			return sync.failed()

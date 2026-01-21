@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react'
-import { IS_SLEEP_CANCELLED, sleep } from '@/lib/utils'
+import { IS_SLEEP_CANCELLED, sleep } from '@/lib/sleep'
 
 /**
  * Custom hook that debounces a function call.

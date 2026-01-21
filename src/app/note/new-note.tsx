@@ -9,7 +9,7 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Show } from '@/components/utils'
-import { useThrottle } from '@/hooks/utils/use-throttling'
+import { useThrottle } from '@/hooks/use-throttling'
 
 interface NewNoteProps
 	extends ComponentProps<'button'>,
