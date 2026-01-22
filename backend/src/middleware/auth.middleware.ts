@@ -1,4 +1,4 @@
-import { getUser, isAuth } from '../auth/clerk.ts'
+import { getUser, isAuth } from '../auth/utils.auth.ts'
 import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
 import { HttpResponse } from 'utils/http-response.util.ts'
