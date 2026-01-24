@@ -15,7 +15,7 @@ type UseFetchResponse = Promise<
 type UseFetchProps = RequestInit & { subUrl?: string }
 
 /**
- * Custom hook for making authorized HTTP requests.
+ * Custom hook for making authorized JSON HTTP requests.
  * @param baseUrl - The base URL for the API.
  * @returns A function that can be used to make HTTP requests.
  */
@@ -25,11 +25,12 @@ export function useAuthFetch(baseUrl: string) {
 	return async (options?: UseFetchProps): UseFetchResponse => {
 		const token = await getToken()
 
-		const headers: HeadersInit = {
-			Authorization: `Bearer ${token}`,
-			...options?.headers,
-		}
-
+    const headers = new Headers({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    })
+        
 		const { subUrl } = options || {}
 		const url = `${baseUrl}${subUrl || ''}`
 

@@ -19,7 +19,7 @@ const factory = createFactory<{ Variables: AuthMiddlewareVariables }>()
 // -< Create note >-
 const create = factory.createHandlers(
 	zValidator('json', CreateNoteSchema),
-	async c => {
+    async c => {
 		const validateNote = c.req.valid('json')
 		const createdNoteId = await NoteService.create(validateNote)
 		return HttpResponse.s201(c, { id: createdNoteId })

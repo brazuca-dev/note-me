@@ -26,7 +26,7 @@ export function useSyncData(): () => Promise<void> {
 		}
 		notify(isLocalSyncedNotify)
 
-		SyncService.setLastSync(Date.now())
+    if (isRemoteSynced || isLocalSynced) SyncService.setLastSync(Date.now())
 	}
 
 	return async (): Promise<void> => {

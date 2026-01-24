@@ -17,7 +17,7 @@ export function useRemoteNote() {
 		lastSync: number
 	): Promise<Note[]> => {
 		const response = await fetch({
-			method: 'PUT',
+      method: 'PUT',
 			subUrl: `/sync/${lastSync}`,
 			body: JSON.stringify({ notes: notesToPush }),
 		})
@@ -31,7 +31,9 @@ export function useRemoteNote() {
 	}
 
 	// -< Create a remote note
-	const create = async (note: Note): IdentificatorOfRowAffected => {
+  const create = async (note: Note): IdentificatorOfRowAffected => {
+    console.log('Creating remote note...', note)
+        
 		const response = await fetch({
 			method: 'POST',
 			body: JSON.stringify(note),
@@ -50,7 +52,6 @@ export function useRemoteNote() {
 
 		const response = await fetch({
 			method: 'PATCH',
-			subUrl: `/${noteCleaned.id}`,
 			body: JSON.stringify(noteCleaned),
 		})
 

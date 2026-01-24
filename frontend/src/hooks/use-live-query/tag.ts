@@ -30,7 +30,6 @@ export function useLiveQueryTag(props?: UseLiveQueryTagProps) {
 					.toArray()
 
 				const tagIds = noteTag.map(item => item.tag)
-
 				return await tx.tag.where('id').anyOf(tagIds).toArray()
 			}
 		)

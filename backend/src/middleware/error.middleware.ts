@@ -7,10 +7,12 @@ export const errorHandlerMiddleware = (
 	err: Error | HTTPResponseError,
 	c: Context<BlankEnv, any, {}>
 ) => {
-	if (err instanceof ApiError)
-		return HttpResponse.error(c, err.message, err.statusCode as any)
+  console.error(err)
+    
+  if (err instanceof ApiError)
+		return HttpResponse.error(c, err.message, 501)
 
-	if (err.name === 'ZodError')
+  if (err.name === 'ZodError')
 		return HttpResponse.error(c, 'Invalid input data', 400)
 
 	return HttpResponse.s500(c, 'Internal Server Error')

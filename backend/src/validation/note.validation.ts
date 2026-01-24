@@ -9,7 +9,7 @@ export const CreateNoteSchema = createInsertSchema(note)
 export const UpdateNoteSchema = createUpdateSchema(note, {
 	id: z.nanoid(),
 	owner: z.string().startsWith('user_'),
-}).required({ id: true })
+}).required({ id: true, owner: true })
 
 export const SyncNotesSchema = createInsertSchema(note, {
 	id: z.nanoid(),

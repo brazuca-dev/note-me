@@ -18,10 +18,8 @@ interface TagsSubMenuProps {
 }
 
 export const TagsSubMenu = ({ noteId, tags, tagsByNote }: TagsSubMenuProps) => {
-	const { toggleTagNote } = useTag()
-
-	console.log(tagsByNote)
-
+  const { toggleTagNote } = useTag()
+	
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger className='space-x-2'>
