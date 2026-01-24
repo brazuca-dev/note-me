@@ -4,7 +4,7 @@ import type { Note, Tag, NoteTag, Settings } from './interfaces'
 const IndexDB = new Dexie('db.note.me') as Dexie & {
 	note: EntityTable<Note, 'id'>
 	tag: EntityTable<Tag, 'id'>
-	noteTag: EntityTable<NoteTag>
+	noteTag: EntityTable<NoteTag, 'note' | 'tag'>
 	settings: EntityTable<Settings, 'key'>
 }
 

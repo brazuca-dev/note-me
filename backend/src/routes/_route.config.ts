@@ -12,4 +12,4 @@ const _cors = cors({
 	credentials: true,
 })
 
-export const RouteSettings = [_cors, logger(), isAuthUser]
+export const RouteSettings = [_cors, isAuthUser, logger()]

@@ -18,7 +18,10 @@ interface NotePeekProps {
 export const NotePeek = ({ note }: NotePeekProps) => {
 	const { selectedNote, handleNoteSelect } = useEditor()
 	const { toggleIsPinned, toggleIsTrashed } = useNote()
-	const { tags, tagsByNote } = useLiveQueryTag()
+
+	const { tags, tagsByNote } = useLiveQueryTag({
+		searchTagByNoteId: note.id,
+	})
 
 	const createdAt = new Date(note.createdAt)
 	const isRecent = isNoteRecent(createdAt, RECENT_TIME_DIFF)

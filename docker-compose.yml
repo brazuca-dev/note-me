@@ -9,10 +9,10 @@ services:
             resources:
                 limits:
                     cpus: "0.50" # Máximo de 50% de 1 CPU
-                    memory: 512M # Máximo de 512MB de RAM
+                    memory: 256M # Máximo de 256MB de RAM (Hono é muito leve!)
                 reservations:
-                    cpus: "0.10" # Reserva garantida de 10% de CPU
-                    memory: 128M # Reserva garantida de 128MB de RAM
+                    cpus: "0.05" # Reserva de 5% de CPU
+                    memory: 64M # Reserva de 64MB de RAM
         container_name: api.note.me
         env_file: .env
         build:
@@ -23,9 +23,7 @@ services:
         volumes:
             - /api/node_modules
         networks:
-            note_me_network:
-                aliases:
-                    - api.note.me
+            - note_me_network
 
     app.note.me:
         deploy:
@@ -36,20 +34,20 @@ services:
             resources:
                 limits:
                     cpus: "0.50" # Máximo de 50% de 1 CPU
-                    memory: 256M # Máximo de 256MB de RAM (Hono é muito leve!)
+                    memory: 512M # Máximo de 512MB de RAM
                 reservations:
-                    cpus: "0.05" # Reserva de 5% de CPU
-                    memory: 64M # Reserva de 64MB de RAM
+                    cpus: "0.10" # Reserva garantida de 10% de CPU
+                    memory: 128M # Reserva garantida de 128MB de RAM
         container_name: app.note.me
         build:
             context: .
             dockerfile: .docker/frontend.dockerfile
             args:
-              VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
-              VITE_API_PROXY: ${VITE_API_PROXY}
-              VITE_AUTOSAVE_DELAY: ${VITE_AUTOSAVE_DELAY}
-              VITE_RECENT_TIME_UPDATE_AT: ${VITE_RECENT_TIME_UPDATE_AT}
-              VITE_TRANSITION_DURATION: ${VITE_TRANSITION_DURATION}
+                VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
+                VITE_API_PROXY: ${VITE_API_PROXY}
+                VITE_AUTOSAVE_DELAY: ${VITE_AUTOSAVE_DELAY}
+                VITE_RECENT_TIME_UPDATE_AT: ${VITE_RECENT_TIME_UPDATE_AT}
+                VITE_TRANSITION_DURATION: ${VITE_TRANSITION_DURATION}
         ports:
             - 5173:5173
         volumes:

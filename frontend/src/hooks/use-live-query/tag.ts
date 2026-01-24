@@ -1,10 +1,13 @@
 import { IndexDB } from '@/data/db.client'
+import Dexie from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useState } from 'react'
 
-export function useLiveQueryTag() {
-	const [noteIdToSearch, setNoteIdToSearch] = useState<string | null>(null)
-	const handleNoteIdToSearch = (id: string | null) => setNoteIdToSearch(id)
+interface UseLiveQueryTagProps {
+	searchTagByNoteId: string
+}
+
+export function useLiveQueryTag(props?: UseLiveQueryTagProps) {
+	const { searchTagByNoteId } = props || {}
 
 	const tags = useLiveQuery(
 		async () => await IndexDB.tag.where('status').equals('active').toArray(),
@@ -12,27 +15,26 @@ export function useLiveQueryTag() {
 	)
 
 	const tagsByNote = useLiveQuery(async () => {
-		if (!noteIdToSearch) return []
+		if (!searchTagByNoteId) return []
 
-		return IndexDB.transaction('r', [IndexDB.note, IndexDB.tag], async tx => {
-			const notesActive = await tx.note
-				.where('status')
-				.equals('active')
-				.primaryKeys()
+		return IndexDB.transaction(
+			'r',
+			[IndexDB.tag, IndexDB.noteTag],
+			async tx => {
+				const noteTag = await tx.noteTag
+					.where('[note+tag]')
+					.between(
+						[searchTagByNoteId, Dexie.minKey],
+						[searchTagByNoteId, Dexie.maxKey]
+					)
+					.toArray()
 
-			const noteTag = await tx.noteTag
-				.where('note')
-				.anyOf(notesActive)
-				.and(item => item.note === noteIdToSearch)
-				.toArray()
+				const tagIds = noteTag.map(item => item.tag)
 
-			return await tx.tag.bulkGet(noteTag.map(item => item.tag))
-		})
-	}, [noteIdToSearch])
+				return await tx.tag.where('id').anyOf(tagIds).toArray()
+			}
+		)
+	}, [searchTagByNoteId])
 
-	return {
-		tags,
-		tagsByNote,
-		handleNoteIdToSearch,
-	}
+	return { tags, tagsByNote }
 }

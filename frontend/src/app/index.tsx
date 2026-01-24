@@ -1,23 +1,28 @@
-import { useEffect } from 'react'
-import { Editor } from './editor'
-import { useAuth } from '@clerk/clerk-react'
-import { useSyncData } from '@/hooks/use-sync-data'
-import { Aside } from './aside'
-import { Toaster } from '@/components/ui/sonner'
+import { Providers } from '@/global'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Logo } from '@/components/logo'
+import { Noteme } from './note-me'
 
 export default function App() {
-	const sync = useSyncData()
-	const { isLoaded, isSignedIn } = useAuth()
-
-	useEffect(() => {
-		if (isLoaded && isSignedIn) sync()
-	}, [isLoaded, isSignedIn])
-
 	return (
-		<div className='flex h-dvh max-h-screen w-dvw subpixel-antialiased'>
-			<Aside />
-			<Editor />
-			<Toaster position='bottom-right' closeButton />
-		</div>
+		<ErrorBoundary
+			fallback={
+				<div
+					role='alert'
+					className='h-dvh w-full flex flex-col justify-center items-center'
+				>
+					<div className='flex items-end gap-2 mb-0.5'>
+						<Logo className='inline' />
+						<small>(Client error)</small>
+					</div>
+					<span className='text-xl'>Something went wrong :/</span>
+					<p>We apologize for the inconvenience. Try again later.</p>
+				</div>
+			}
+		>
+			<Providers>
+				<Noteme />
+			</Providers>
+		</ErrorBoundary>
 	)
 }

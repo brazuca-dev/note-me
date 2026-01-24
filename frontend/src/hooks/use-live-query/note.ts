@@ -7,7 +7,7 @@ import { useCallback } from 'react'
 export function useLiveQueryNote() {
 	const { query } = useSearch()
 	const { selectedTags } = useEditor()
-	
+
 	const sortDefault = useCallback((notes: Note[]) => {
 		return notes.sort((a, b) => {
 			if (a.isPinned === true && b.isPinned === true)

@@ -10,7 +10,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-.env
+**.env
 
 # Editores
 .vscode/*
@@ -28,9 +28,7 @@ lerna-debug.log*
 # BACKEND
 # ==========================================
 backend/node_modules/
-backend/.env
 backend/dist/
-backend/.env.production
 backend/.yarn/
 !backend/.yarn/releases
 
@@ -40,6 +38,4 @@ backend/.yarn/
 frontend/node_modules/
 frontend/dist/
 frontend/dist-ssr/
-frontend/.env
 frontend/*.local
-!frontend/.env.example

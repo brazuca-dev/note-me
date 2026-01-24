@@ -1,6 +1,6 @@
 ## **🌱 Note.me**
 
-Boas vindas ao projeto **Note.me**! Um MVP (Minimum Viable Product) que permite gerenciar anotações de forma simples e intuitiva. Esta aplicação possui armazenamento local, no navegador, através do [Dexie](https://dexie.org/), e armazenamento remoto, através do [Turso](https://turso.tech/).
+Boas vindas ao projeto **Note.me**! Um POC (Proof of Concept) que permite gerenciar anotações de forma simples e intuitiva. Esta aplicação possui armazenamento local, no navegador, através do [Dexie](https://dexie.org/), e armazenamento remoto, através do [Turso](https://turso.tech/).
 
 ---
 
@@ -16,17 +16,16 @@ Boas vindas ao projeto **Note.me**! Um MVP (Minimum Viable Product) que permite 
 git clone https://github.com/brazuca-dev/note-me.git
 ```
 
-2. Copie os arquivos (Frontend e Backend) `.env.example` para `.env` e configure suas chaves:
+2. Copie o arquivo `.env.example` para `.env` e configure suas chaves:
 
 ```bash
-cp ./backend/.env.example ./backend/.env
-cp ./frontend/.env.example ./frontend/.env 
+cp .env.example .env
 ```
 
 4. Execute o projeto:
 
 ```bash
-docker compose -f .docker/docker-compose.yml up --build
+docker compose up --build
 ```
 
 5. Abra seu navegador e vá para `http://localhost:5173`
