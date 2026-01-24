@@ -13,19 +13,20 @@ Boas vindas ao projeto **Note.me**! Um MVP (Minimum Viable Product) que permite 
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/BrazucaDeveloper/note-me.git
+git clone https://github.com/brazuca-dev/note-me.git
 ```
 
 2. Copie os arquivos (Frontend e Backend) `.env.example` para `.env` e configure suas chaves:
 
 ```bash
-cp ./backend/.env.example ./backend/.env ./frontend/.env.example ./frontend/.env 
+cp ./backend/.env.example ./backend/.env
+cp ./frontend/.env.example ./frontend/.env 
 ```
 
 4. Execute o projeto:
 
 ```bash
-docker compose up
+docker compose -f .docker/docker-compose.yml up --build
 ```
 
 5. Abra seu navegador e vá para `http://localhost:5173`

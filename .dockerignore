@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+.github
+
+# Dependencies
+**/node_modules
+**/.bun-cache
+
+# Build outputs
+**/dist
+**/build
+**/.next
+
+# IDE settings and SO
+.vscode
+.idea
+.DS_Store
+*.swp
+thumbs.db
+
+# secrets and Logs
+**/.env
+**/.env.*
+**/npm-debug.log*
+**/yarn-error.log*
+**/bun.lockb
+**/logs
+
+# Docs
+.docker
+README.md
+LICENSE
