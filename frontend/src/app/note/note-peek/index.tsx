@@ -49,8 +49,8 @@ export const NotePeek = ({ note }: NotePeekProps) => {
 				note={note}
 				tags={tags}
 				tagsByNote={tagsByNote}
-				onTogglePin={() => toggleIsPinned(note.id)}
-				onToggleTrash={() => toggleIsTrashed(note.id)}
+				onTogglePin={() => toggleIsPinned(note.id, note.isPinned)}
+				onToggleTrash={() => toggleIsTrashed(note.id, note.status)}
 			/>
 		</ContextMenu>
 	)

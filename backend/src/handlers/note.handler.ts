@@ -1,5 +1,5 @@
 import { createFactory } from 'hono/factory'
-import { zValidator } from '@hono/zod-validator'
+import { zValidator } from '../utils/z-validator'
 import {
 	CreateNoteSchema,
 	UpdateNoteSchema,
@@ -40,19 +40,19 @@ const update = factory.createHandlers(
 
 // -< Sync notes >-
 const sync = factory.createHandlers(
-	zValidator('param', LastSyncSchema),
 	zValidator('json', SyncNotesSchema),
+	zValidator('param', LastSyncSchema),
 	async c => {
 		const owner = c.get('userId')
-		const lastSync = c.req.valid('param')
+		const { lastSync } = c.req.valid('param')
 		const validateNotesToSync = c.req.valid('json')
 
-		const { data: notes } = await NoteService.sync(
+		const { data } = await NoteService.sync(
 			owner,
 			validateNotesToSync,
 			lastSync
 		)
-		return HttpResponse.s200(c, { notes })
+		return HttpResponse.s200(c, { notes: data })
 	}
 )
 

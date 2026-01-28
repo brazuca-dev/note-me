@@ -15,25 +15,24 @@ export function useRemoteNote() {
 	const push = async (
 		notesToPush: Note[],
 		lastSync: number
-	): Promise<Note[]> => {
+  ): Promise<Note[]> => {
 		const response = await fetch({
-      method: 'PUT',
+			method: 'PUT',
 			subUrl: `/sync/${lastSync}`,
-			body: JSON.stringify({ notes: notesToPush }),
+			body: JSON.stringify(notesToPush),
 		})
 
-		if (!response.ok) throw new Error('Failed to push notes to remote storage')
-		const { data, status, message } =
-			await response.json<JSONSyncData<Note, 'note'>>()
-
-		if (status !== 200) throw new Error(message)
-		return data.note.toPull
+    const { data, message } = await response.json<JSONSyncData<Note, 'notes'>>()
+		
+    if (!response.ok) throw new Error(message)
+    console.log(data)
+		return data.notes.toPull
 	}
 
 	// -< Create a remote note
-  const create = async (note: Note): IdentificatorOfRowAffected => {
-    console.log('Creating remote note...', note)
-        
+	const create = async (note: Note): IdentificatorOfRowAffected => {
+		console.log('Creating remote note...', note)
+
 		const response = await fetch({
 			method: 'POST',
 			body: JSON.stringify(note),

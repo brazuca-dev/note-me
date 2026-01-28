@@ -1,4 +1,4 @@
-import { zValidator } from '@hono/zod-validator'
+import { zValidator } from '../utils/z-validator'
 import { createFactory } from 'hono/factory'
 import type { AuthMiddlewareVariables } from 'middleware/auth.middleware'
 import { TagService } from 'services/tag.service'
@@ -36,19 +36,19 @@ const update = factory.createHandlers(
 
 // -< Sync a tag >-
 const sync = factory.createHandlers(
-	zValidator('param', LastSyncSchema),
 	zValidator('json', SyncTagsSchema),
+	zValidator('param', LastSyncSchema),
 	async c => {
 		const owner = c.get('userId')
-		const lastSync = c.req.valid('param')
+		const { lastSync } = c.req.valid('param')
 		const validateTagsToSync = c.req.valid('json')
 
-		const { data: tags } = await TagService.sync(
+		const { data } = await TagService.sync(
 			owner,
 			validateTagsToSync,
 			lastSync
 		)
-		return HttpResponse.s200(c, { tags })
+		return HttpResponse.s200(c, { tags: data })
 	}
 )
 

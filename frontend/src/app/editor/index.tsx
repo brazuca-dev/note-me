@@ -15,7 +15,7 @@ import {
 import { useEditor } from '@/global/context/editor-context'
 import { isEmpty } from '@/lib/utils'
 
-const TipTap = lazy(() => import('./tip-tap.tsx'))
+const TipTap = lazy(() => import('./tip-tap'))
 
 export function Editor() {
 	const { selectedNote, handleNoteSelect } = useEditor()

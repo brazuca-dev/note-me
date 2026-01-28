@@ -16,3 +16,10 @@ export function isEmpty(value: any): boolean {
 	const isArrayEmpty = Array.isArray(value) && value.length === 0
 	return isPrimitiveEmpty || isArrayEmpty
 }
+
+export function getErrorMessage(error: unknown): string {
+	if (error instanceof Error) {
+		return error.message
+	}
+	return 'Unknown error'
+}

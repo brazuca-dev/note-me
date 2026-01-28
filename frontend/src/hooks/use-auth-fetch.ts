@@ -25,12 +25,12 @@ export function useAuthFetch(baseUrl: string) {
 	return async (options?: UseFetchProps): UseFetchResponse => {
 		const token = await getToken()
 
-    const headers = new Headers({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    })
-        
+		const headers = new Headers({
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'application/json',
+			...options?.headers,
+		})
+
 		const { subUrl } = options || {}
 		const url = `${baseUrl}${subUrl || ''}`
 
