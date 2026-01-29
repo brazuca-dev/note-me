@@ -16,7 +16,7 @@ export function Providers({ children }: ProvidersProps) {
 	return (
 		<ClerkProvider
 			publishableKey={PUBLISHABLE_KEY}
-			appearance={{ cssLayerName: 'clerk' }}
+      appearance={{ cssLayerName: 'clerk' }}
 		>
 			<Compose
 				providers={[

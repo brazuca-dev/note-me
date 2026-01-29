@@ -21,7 +21,7 @@ export function Editor() {
 	const { selectedNote, handleNoteSelect } = useEditor()
 
 	return (
-		<Card className='grow size-full pl-4 pt-8 rounded-none overflow-hidden'>
+		<Card className='grow size-full md:pl-4 pt-8 rounded-none overflow-hidden'>
 			<Show condition={!isEmpty(selectedNote?.id)} fallback={<Fallback />}>
 				<ScrollArea className='h-full w-full content-center'>
 					<CardHeader className='flex items-center sticky top-0 bg-card pb-4'>

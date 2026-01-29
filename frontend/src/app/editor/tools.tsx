@@ -29,13 +29,13 @@ export function Tools() {
 	const { downloadNote, hasDownloaded } = useDownloadNote(selectedNote)
 
 	return (
-		<div className='ml-auto space-x-2 pr-4'>
+		<div className='md:m-0 md:ml-auto space-x-2 md:pr-4 fixed bottom-0 right-0 mr-4 mb-6 md:static'>
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Button
 						size='icon'
 						variant='outline'
-						onClick={() => toggleIsPinned(selectedNote.id)}
+						onClick={() => toggleIsPinned(selectedNote.id, selectedNote.isPinned)}
 					>
 						<PinIcon variant={selectedNote?.isPinned ? 'filled' : 'outline'} />
 					</Button>
@@ -85,7 +85,7 @@ export function Tools() {
 						data-saving={isSaving}
 						aria-label='local save'
 						data-save={isSaved.localSaved}
-						className='data-[saving=true]:animate-pulse data-[save=true]:bg-primary data-[save=true]:text-primary-foreground data-[save=false]:bg-destructive data-[save=false]:text-primary-foreground transition-colors duration-400 ml-4'
+						className='data-[saving=true]:animate-pulse data-[save=true]:bg-primary data-[save=true]:text-primary-foreground data-[save=false]:bg-destructive data-[save=false]:text-primary-foreground transition-colors duration-400 md:ml-4 ml-2'
 					>
 						<Save />
 					</Button>
