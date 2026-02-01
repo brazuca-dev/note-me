@@ -1,10 +1,20 @@
-## **🌱 Note.me**
+## 🌱 Note.me | Gestão Inteligente de Notas
 
-Boas vindas ao projeto **Note.me**! Um POC (Proof of Concept) que permite gerenciar anotações de forma simples e intuitiva. Esta aplicação possui armazenamento local, no navegador, através do [Dexie](https://dexie.org/), e armazenamento remoto, através do [Turso](https://turso.tech/).
+O Note.me é uma Prova de Conceito (PoC) focada em alta disponibilidade e performance. A aplicação resolve o dilema entre latência e persistência ao implementar uma estratégia de armazenamento híbrido: local (IndexedDB via Dexie) para acesso imediato e remoto (SQLite via Turso) para sincronização em nuvem.
+
+![Imagem do Projeto](preview.png)
 
 ---
 
-![Imagem do Projeto](preview.png)
+### **🎯 Por que este projeto existe?**
+
+Como estudante de Licenciatura e Desenvolvedor, criei o Note.me para explorar como ferramentas modernas podem simplificar a experiência do usuário sem sacrificar a robustez técnica. O foco aqui foi:
+
+- Developer Experience (DX): Uso do Bun e Biome para um ciclo de desenvolvimento ultra veloz.
+
+- Segurança e Identidade: Autenticação gerenciada via Clerk.
+
+- Persistência Eficiente: Validação com Zod no Backend (Hono) e Frontend.
 
 ---
 
@@ -32,34 +42,39 @@ docker compose up --build
 
 ---
 
-## **⚒️ Tecnologias utilizadas**
+### **⚒️ Stack tecnológica**
 
 - 🎨 Frontend
-  - ⚡ [Vite](https://vitejs.dev/) - Ferramenta de construção WEB
-  - ⚛️ [React](https://reactjs.org/) - Biblioteca de componentes reativos
-  - 🎨 [Tailwind CSS](https://tailwindcss.com/) - Framework CSS focado em utilitários
-  - 🧩 [Shadcn UI](https://shadcn.com/) - Componentes Tailwind CSS
-  - 📝 [Tiptap](https://tiptap.dev/) - Editor de texto React
-  - 💾 [Dexie](https://dexie.org/) - Biblioteca para acessar o IndexDB
-
----
+  - ⚡ Vite - Ferramenta de construção WEB
+  - ⚛️ React - Biblioteca de componentes reativos
+  - 🎨 Tailwind CSS - Framework CSS focado em utilitários
+  - 🧩 Shadcn UI - Componentes Tailwind CSS
+  - 📝 Tiptap - Editor de texto React
+  - 💾 Dexie - Biblioteca para acessar o IndexDB
 
 - 🙍 Backend
-  - 🔥 [Hono](https://hono.dev/) - Framework para aplicações WEB
-  - 🛡️ [Zod](https://zod.dev/) - Validação de dados com esquemas
-  - 👤 [Clerk](https://clerk.com/) - Gerenciador de usuários
-  - ☁️ [Turso](https://turso.tech/) - SQLite em nuvem
-
----
+  - 🔥 Hono - Framework para aplicações WEB
+  - 🛡️ Zod - Validação de dados com esquemas
+  - 👤 Clerk - Gerenciador de usuários
+  - ☁️ Turso - SQLite em nuvem
+  - 🌉 Nas duas pontas
+  - 🧹 Biome - Formatador de código
 
 - 🌉 Nas duas pontas
-  - 🧹 [Biome](https://biomejs.dev/) - Formatador de código
-  - 🟦 [TypeScript](https://www.typescriptlang.org/) - Superset de JavaScript
-  - 🫓 [Bun](https://bun.com/) - Runtime JavaScript
-  - 🐳 [Docker](https://www.docker.com/) - Plataforma de containerização
+  - 🟦 TypeScript - Superset de JavaScript
+  - 🫓 Bun - Runtime JavaScript
+  - 🐳 Docker - Plataforma de containerização
 
 ---
 
-## **🥸 Creator**
+### **💡 Diferenciais Técnicos**
+
+- Offline-First: O uso do Dexie garante que o usuário nunca perca dados por instabilidade de rede.
+- Edge Ready: Backend construído com Hono, preparado para rodar em arquiteturas de borda (Edge Computing).
+- Containerização: Dockerfile otimizado para que o ambiente de dev seja idêntico ao de prod.
+
+---
+
+## **🥸 Autoria**
 
 Projeto criado e mantido por🧑‍💻 [BrazucaDeveloper](https://github.com/BrazucaDeveloper) e sob licença [MIT](./LICENSE)
