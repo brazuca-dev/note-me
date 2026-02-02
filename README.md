@@ -77,4 +77,4 @@ docker compose up --build
 
 ## **🥸 Autoria**
 
-Projeto criado e mantido por🧑‍💻 [BrazucaDeveloper](https://github.com/BrazucaDeveloper) e sob licença [MIT](./LICENSE)
+Projeto criado e mantido por🧑‍💻 [brazuca-dev](https://github.com/brazuca-dev) e sob licença [MIT](./LICENSE)
