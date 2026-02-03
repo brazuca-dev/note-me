@@ -1,6 +1,4 @@
-# ==========================================
 # REGRAS GERAIS (Raiz e Global)
-# ==========================================
 .DS_Store
 Thumbs.db
 *.log
@@ -24,17 +22,13 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# ==========================================
 # BACKEND
-# ==========================================
 backend/node_modules/
 backend/dist/
 backend/.yarn/
 !backend/.yarn/releases
 
-# ==========================================
 # FRONTEND
-# ==========================================
 frontend/node_modules/
 frontend/dist/
 frontend/dist-ssr/
